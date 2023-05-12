@@ -9,8 +9,8 @@ const Cast = () => {
   const [cast, setCast] = useState(null);
 
   const location = useLocation();
-  const movieId = location.state.from;
-  console.log(movieId);
+  const path = location.pathname;
+  const movieId = path.slice(8, path.length - 5);
 
   useEffect(() => {
     fetch(`${BASE_URL}${movieId}${PARAMS}`)
@@ -18,26 +18,27 @@ const Cast = () => {
       .then(data => setCast(data.cast));
   }, []);
 
-  console.log(cast);
 
-    return (
-      cast && (
-        <section>
-          <ul>
-            {cast.map(actor => (
+  return (
+    cast && (
+      <section>
+        <ul>
+          {cast.map(actor => {
+            const imagePath = actor.profile_path
+              ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}`
+              : '../../../../images/no_img.jpeg';
+            return (
               <li key={actor.id}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
-                  alt=""
-                    />
-                    <h2>{actor.name}</h2>
-                    <p>Character: { actor.character}</p>
+                <img src={imagePath} alt="" />
+                <h2>{actor.name}</h2>
+                <p>Character: {actor.character}</p>
               </li>
-            ))}
-          </ul>
-        </section>
-      )
-    );
+            );
+          })}
+        </ul>
+      </section>
+    )
+  );
 };
 
 export default Cast;
